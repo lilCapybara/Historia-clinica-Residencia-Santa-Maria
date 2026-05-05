@@ -1,0 +1,21 @@
+{
+  "backToPatientLists": "Zurück zur Patientenliste",
+  "checkFilters": "Überprüfe die Filter oben",
+  "createdOn": "Erstellt am",
+  "identifier": "Kennung",
+  "listName": "Listenname",
+  "listType": "Listentyp",
+  "name": "Name",
+  "noMatchingListsFound": "Keine passenden Listen anzuzeigen",
+  "noMatchingPatients": "Keine passenden Patienten anzuzeigen",
+  "noPatientListsToDisplay": "Keine Patientenlisten anzuzeigen",
+  "noPatientsInList": "In dieser Liste sind keine Patienten aufgeführt",
+  "numberOfPatients": "Anzahl der Patienten",
+  "patientListDetailWorkspaceTitle": "Details zur Patientenliste",
+  "patientLists": "Patientenlisten",
+  "patientListsWorkspaceTitle": "Patientenlisten",
+  "patients": "Patienten",
+  "searchThisList": "Diese Liste durchsuchen",
+  "sex": "Geschlecht",
+  "startDate": "Startdatum"
+}

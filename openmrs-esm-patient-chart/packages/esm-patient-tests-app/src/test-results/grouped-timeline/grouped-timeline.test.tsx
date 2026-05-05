@@ -1,0 +1,253 @@
+import React from 'react';
+import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
+import { getByTextWithMarkup } from 'tools';
+import { showModal } from '@openmrs/esm-framework';
+import { mockGroupedResults } from '__mocks__';
+import { type FilterContextProps } from '../filter/filter-types';
+import FilterContext from '../filter/filter-context';
+import GroupedTimeline from './grouped-timeline.component';
+
+const mockShowModal = jest.mocked(showModal);
+
+describe('GroupedTimeline', () => {
+  const mockFilterContext: FilterContextProps = {
+    activeTests: ['Bloodwork-Chemistry', 'Bloodwork'],
+    timelineData: mockGroupedResults.timelineData,
+    tableData: mockGroupedResults.tableData,
+    trendlineData: null,
+    parents: mockGroupedResults.parents,
+    checkboxes: { Bloodwork: false, Chemistry: true },
+    someChecked: false,
+    lowestParents: mockGroupedResults['lowestParents'],
+    totalResultsCount: 0,
+    isLoading: false,
+    initialize: jest.fn(),
+    toggleVal: jest.fn(),
+    updateParent: jest.fn(),
+    resetTree: jest.fn(),
+    roots: [],
+    tests: {},
+    filteredResultsCount: 0,
+  };
+
+  const renderGroupedTimeline = (contextValue = mockFilterContext) =>
+    render(
+      <FilterContext.Provider value={contextValue}>
+        <GroupedTimeline patientUuid="some-test-uuid" />
+      </FilterContext.Provider>,
+    );
+
+  it('renders an empty state when there are no results', () => {
+    renderGroupedTimeline({
+      ...mockFilterContext,
+      timelineData: {
+        ...mockFilterContext.timelineData,
+        data: { ...mockFilterContext.timelineData.data, rowData: [] },
+      },
+      tableData: mockGroupedResults.tableData,
+    });
+
+    expect(screen.getByRole('heading', { name: /data timeline/i })).toBeInTheDocument();
+    expect(screen.getByText(/there are no data to display for this patient/i)).toBeInTheDocument();
+  });
+
+  it('renders the grouped timeline view with the correct data', () => {
+    renderGroupedTimeline();
+
+    expect(screen.getByText('Serum chemistry panel')).toBeInTheDocument();
+    expect(screen.getByText('2024')).toBeInTheDocument();
+    expect(screen.getByText('2023')).toBeInTheDocument();
+    expect(screen.getByText('May 31')).toBeInTheDocument();
+    expect(screen.getByText('Nov 9')).toBeInTheDocument();
+    expect(screen.getByText('01:39 AM')).toBeInTheDocument();
+    expect(screen.getByText('Total bilirubin')).toBeInTheDocument();
+    // Units are now combined with range, so if there's no range, units won't be displayed separately
+    // Total bilirubin doesn't have a range in timelineData, so units are not displayed
+    expect(screen.getByText('261.9')).toBeInTheDocument();
+    expect(screen.getByText('21.5')).toBeInTheDocument();
+    expect(screen.getByText('Serum glutamic-pyruvic transaminase')).toBeInTheDocument();
+    expect(screen.getByText('0 – 35 IU/L')).toBeInTheDocument();
+    expect(screen.getByText('3.8')).toBeInTheDocument();
+    expect(screen.getByText('2.9')).toBeInTheDocument();
+  });
+
+  it('displays most recent observation range when available', () => {
+    const contextWithObservationRanges = {
+      ...mockFilterContext,
+      timelineData: {
+        ...mockFilterContext.timelineData,
+        data: {
+          ...mockFilterContext.timelineData.data,
+          rowData: [
+            {
+              ...mockFilterContext.timelineData.data.rowData[0],
+              range: '0 – 50', // Node-level range
+              units: 'umol/L',
+              entries: [
+                {
+                  obsDatetime: '2024-05-31 01:39:03.0',
+                  value: '261.9',
+                  interpretation: 'NORMAL',
+                  lowNormal: 35,
+                  hiNormal: 50,
+                  range: '35 – 50', // Observation-level range (most recent)
+                  // Note: Units are only at the concept/node level, not observation-level
+                },
+                {
+                  obsDatetime: '2023-11-09 23:15:03.0',
+                  value: '21.5',
+                  interpretation: 'NORMAL',
+                  lowNormal: 20,
+                  hiNormal: 45,
+                  range: '20 – 45', // Older observation-level range
+                  // Note: Units are only at the concept/node level, not observation-level
+                },
+              ],
+            },
+          ],
+        },
+      },
+    };
+
+    renderGroupedTimeline(contextWithObservationRanges as FilterContextProps);
+
+    // Should display most recent observation's range (35 – 50) not node-level (0 – 50)
+    // Range and units are displayed separately in the same element
+    const rangeElement = getByTextWithMarkup(/35 – 50/);
+    expect(rangeElement).toBeInTheDocument();
+    // Verify that the same element also contains the units
+    expect(rangeElement).toHaveTextContent('35 – 50 umol/L');
+  });
+
+  it('correctly filters rows based on checkbox selection when someChecked is true', () => {
+    renderGroupedTimeline({
+      ...mockFilterContext,
+      someChecked: true,
+      checkboxes: { Chemistry: false, Bloodwork: true },
+    });
+
+    // TODO: Add assertions for showing checked items; would require updated mock data
+    // TODO: The filtering logic for someChecked doesn't appear to be implemented yet
+
+    // For now, just verify the component renders when someChecked is true
+    expect(screen.getByText('Serum chemistry panel')).toBeInTheDocument();
+
+    // Assert that Chemistry items are not shown (commenting out until filtering is implemented)
+    // expect(screen.queryByText('Serum glutamic-pyruvic transaminase')).not.toBeInTheDocument();
+    // expect(screen.queryByText('Serum glutamic-oxaloacetic transaminase')).not.toBeInTheDocument();
+    // expect(screen.queryByText('Alkaline phosphatase')).not.toBeInTheDocument();
+    // expect(screen.queryByText('Total bilirubin')).not.toBeInTheDocument();
+  });
+
+  it('correctly applies interpretation styling to results', () => {
+    const contextWithInterpretations = {
+      ...mockFilterContext,
+      timelineData: {
+        ...mockFilterContext.timelineData,
+        data: {
+          ...mockFilterContext.timelineData.data,
+          rowData: [
+            {
+              ...mockFilterContext.timelineData.data.rowData[0],
+              entries: [
+                { value: '100', interpretation: 'HIGH', obsDatetime: '2024-05-31T01:39:00.000Z' },
+                { value: '50', interpretation: 'NORMAL', obsDatetime: '2024-05-30T10:00:00.000Z' },
+                { value: '10', interpretation: 'LOW', obsDatetime: '2024-05-29T08:00:00.000Z' },
+              ],
+            },
+          ],
+        },
+      },
+    };
+
+    renderGroupedTimeline(contextWithInterpretations as FilterContextProps);
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const highCell = screen.getByText('100').closest('div');
+    // eslint-disable-next-line testing-library/no-node-access
+    const normalCell = screen.getByText('50').closest('div');
+
+    // TODO: Add tests for low interpretation
+
+    expect(highCell).toHaveClass('high');
+    expect(normalCell).not.toHaveClass('high');
+    expect(normalCell).not.toHaveClass('low');
+  });
+
+  it('renders values correctly when entries are indexed against a global time array', () => {
+    // This tests the fix for a bug where GridItems used index-based lookup (obs[i])
+    // but row.entries was indexed against the global allTimes array while sortedTimes
+    // was panel-local. When a panel had fewer time columns than the global array,
+    // the indices wouldn't align and values would be missing.
+    const globalTimes = [
+      '2024-05-31 01:39:03.0',
+      '2024-03-15 10:00:00.0', // time from a different panel
+      '2023-11-09 23:15:03.0',
+    ];
+
+    const contextWithMismatchedEntries: FilterContextProps = {
+      ...mockFilterContext,
+      timelineData: {
+        ...mockFilterContext.timelineData,
+        data: {
+          ...mockFilterContext.timelineData.data,
+          rowData: [
+            {
+              ...mockFilterContext.timelineData.data.rowData[0],
+              // entries indexed against global allTimes (3 entries, middle one is undefined)
+              entries: [
+                {
+                  obsDatetime: '2024-05-31 01:39:03.0',
+                  value: '261.9',
+                  interpretation: 'NORMAL' as const,
+                },
+                undefined,
+                {
+                  obsDatetime: '2023-11-09 23:15:03.0',
+                  value: '21.5',
+                  interpretation: 'NORMAL' as const,
+                },
+              ],
+            },
+          ],
+        },
+      },
+    };
+
+    renderGroupedTimeline(contextWithMismatchedEntries);
+
+    // Values should render correctly even though entries[1] is undefined
+    // because GridItems matches by obsDatetime, not by array index
+    expect(screen.getByText('261.9')).toBeInTheDocument();
+    expect(screen.getByText('21.5')).toBeInTheDocument();
+  });
+
+  it('applies panelHeaderOverlay class when inOverlay is true', () => {
+    // This is tested indirectly through the overlay rendering in
+    // individual-results-table-tablet, but we verify the CSS class exists
+    renderGroupedTimeline();
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const panelHeader = screen.getByText('Serum chemistry panel').closest('[data-panel-name]');
+    expect(panelHeader).toBeInTheDocument();
+    // In the normal (non-overlay) context, panelHeaderOverlay should NOT be applied
+    expect(panelHeader).not.toHaveClass('panelHeaderOverlay');
+  });
+
+  it('launches a modal when a non-string result is clicked', async () => {
+    const user = userEvent.setup();
+    renderGroupedTimeline();
+
+    const result = screen.getByText('Total bilirubin');
+    await user.click(result);
+
+    expect(mockShowModal).toHaveBeenCalled();
+    expect(mockShowModal).toHaveBeenCalledWith('timeline-results-modal', {
+      closeDeleteModal: expect.any(Function),
+      patientUuid: 'some-test-uuid',
+      testUuid: '655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      title: 'Total bilirubin',
+    });
+  });
+});

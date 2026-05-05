@@ -1,0 +1,16 @@
+{
+  "activeVisit": "Aktiver Aufenthalt",
+  "address1": "Adresszeile 1",
+  "address2": "Adresszeile 2",
+  "city": "Stadt",
+  "cityVillage": "Stadt",
+  "country": "Land",
+  "countyDistrict": "Landkreis",
+  "deceased": "Verstorben",
+  "district": "Landkreis",
+  "from_lower": "aus",
+  "postalCode": "Postleitzahl",
+  "started": "Gestartet",
+  "state": "Bundesland",
+  "stateProvince": "Bundesland"
+}

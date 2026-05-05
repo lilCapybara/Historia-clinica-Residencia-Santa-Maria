@@ -1,0 +1,279 @@
+@use '@carbon/colors';
+@use '@carbon/layout';
+@use '@carbon/type';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+
+.timelineDataContainer {
+  > div {
+    border: 0.5px solid colors.$gray-50;
+    border-right: none;
+    border-top: none;
+  }
+
+  > div:first-child {
+    border-top: none;
+  }
+
+  > div + div {
+    margin: layout.$spacing-05 0;
+  }
+}
+
+.grid {
+  width: 100%;
+  min-width: 100%;
+  background-color: $color-gray-30;
+  display: grid;
+  grid-auto-rows: auto;
+  gap: 1px;
+  justify-items: center;
+  align-items: center;
+}
+
+.dayColumn,
+.yearColumn {
+  @include type.type-style('heading-compact-01');
+  color: colors.$gray-70;
+}
+
+.timeColumn {
+  @include type.type-style('body-compact-01');
+  color: $text-02;
+  scroll-snap-align: start;
+}
+
+.paddedMain {
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.timelineCell {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  padding: layout.$spacing-03;
+}
+
+.timelineDataCell {
+  @extend .timelineCell;
+  justify-items: first baseline;
+  gap: 0;
+
+  p {
+    @include type.type-style('body-compact-01');
+    color: $text-02;
+  }
+
+  &:hover {
+    background-color: colors.$blue-10;
+    border-top: 2px colors.$blue-30;
+  }
+}
+
+.gridContainer {
+  padding: 0;
+  box-sizing: border-box;
+  display: grid;
+  grid-auto-flow: row;
+  column-gap: 1px;
+  row-gap: 0px;
+  background-color: $color-gray-30;
+  border-collapse: collapse;
+  overflow-x: auto;
+  width: 100%;
+  background-color: white;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    // needed for Chrome, Edge, Opera, Safari
+    display: none;
+  }
+}
+
+.rowStartCell {
+  @extend .timelineCell;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  left: 0;
+  top: auto;
+  display: grid;
+  grid-auto-flow: row;
+  gap: 0.5px;
+  justify-items: baseline;
+  align-items: center;
+  padding: layout.$spacing-05;
+  border-left: none !important;
+
+  :last-of-type {
+    border-bottom: none !important;
+  }
+}
+
+.timelineCellZebra {
+  background-color: colors.$gray-10;
+}
+
+.dateHeaderInner {
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.timeSlotInner {
+  background-color: $ui-03;
+  padding: 3px 10px;
+  justify-self: stretch;
+  align-self: stretch;
+  display: grid;
+  align-items: center;
+
+  div {
+    position: sticky;
+    left: calc(10em + 10px);
+    width: max-content;
+  }
+}
+
+.cornerGridElement {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 layout.$spacing-03;
+
+  div {
+    font-weight: 600;
+  }
+}
+
+.panelHeader {
+  position: sticky;
+  top: layout.$spacing-12;
+  z-index: 1;
+  background: white;
+  border-bottom: 1px solid $ui-03;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panelHeaderOverlay {
+  top: 0;
+}
+
+.panelHeader + div .grid > div:first-child {
+  border-top: none;
+}
+
+.panelHeader + div .grid {
+  border-left: 1px solid $ui-03 !important;
+}
+
+.panelNameText {
+  @include type.type-style('heading-compact-01');
+  color: colors.$gray-70;
+}
+
+.shadow {
+  box-shadow: layout.$spacing-03 0 20px 0 rgba(0, 0, 0, 0.15);
+  border-right: 1px solid colors.$gray-50;
+}
+
+.trendlineLink {
+  @include type.type-style('body-compact-01');
+  color: $text-02;
+  cursor: default;
+}
+
+.trendline-link-view {
+  @include type.type-style('body-compact-01');
+  color: $interactive-01;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.rangeUnits {
+  @include type.type-style('helper-text-01');
+  color: colors.$gray-70;
+}
+
+.offScaleHigh,
+.offScaleLow,
+.criticallyHigh,
+.criticallyLow,
+.high,
+.low {
+  p {
+    @include type.type-style('heading-compact-01');
+    color: $ui-05;
+  }
+}
+
+.high,
+.low {
+  background-color: colors.$orange-10;
+  border-top: 1px solid colors.$orange-20;
+}
+
+.criticallyHigh,
+.criticallyLow {
+  background-color: colors.$red-20;
+  border-top: 1px solid colors.$red-20-hover;
+}
+
+.offScaleLow {
+  p::after {
+    content: ' ↓↓↓';
+  }
+}
+
+.offScaleHigh {
+  p::after {
+    content: ' ↑↑↑';
+  }
+}
+
+.criticallyLow {
+  p::after {
+    content: ' ↓↓';
+  }
+}
+
+.criticallyHigh {
+  p::after {
+    content: ' ↑↑';
+  }
+}
+
+.low {
+  p::after {
+    content: ' ↓';
+  }
+}
+
+.high {
+  p::after {
+    content: ' ↑';
+  }
+}
+
+.shadowBox {
+  grid-row: 2 / -1;
+  grid-column: 1 / 2;
+}
+
+.trendline-link-view {
+  @include type.type-style('helper-text-01');
+  color: colors.$blue-60;
+  cursor: pointer;
+}
+
+.trendline-link-view:hover {
+  text-decoration: underline;
+}

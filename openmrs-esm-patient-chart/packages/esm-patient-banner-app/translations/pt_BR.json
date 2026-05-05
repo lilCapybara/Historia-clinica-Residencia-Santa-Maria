@@ -1,0 +1,16 @@
+{
+  "activeVisit": "Visita Ativa",
+  "address1": "Endereço Linha 1",
+  "address2": "Endereço Linha 2",
+  "city": "Cidade",
+  "cityVillage": "cidade",
+  "country": "País",
+  "countyDistrict": "Estado",
+  "deceased": "Falecido",
+  "district": "Estado",
+  "from_lower": "de",
+  "postalCode": "Código postal CEP",
+  "started": "Iniciado",
+  "state": "Estado",
+  "stateProvince": "Estado"
+}

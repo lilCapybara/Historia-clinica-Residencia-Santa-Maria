@@ -1,0 +1,16 @@
+{
+  "activeVisit": "Visita activa",
+  "address1": "Línea de Dirección 1",
+  "address2": "Línea de Dirección 2",
+  "city": "Ciudad",
+  "cityVillage": "ciudad",
+  "country": "País",
+  "countyDistrict": "Distrito",
+  "deceased": "Fallecido",
+  "district": "Distrito",
+  "from_lower": "De",
+  "postalCode": "Código postal",
+  "started": "Iniciado",
+  "state": "Estado",
+  "stateProvince": "Estado"
+}

@@ -1,0 +1,16 @@
+{
+  "activeVisit": "Visite en cours",
+  "address1": "Ligne d'adresse 1",
+  "address2": "Ligne d'adresse 2",
+  "city": "Ville",
+  "cityVillage": "ville",
+  "country": "Pays",
+  "countyDistrict": "District",
+  "deceased": "Décédé",
+  "district": "District",
+  "from_lower": "du",
+  "postalCode": "Code postal",
+  "started": "Démarré",
+  "state": "État",
+  "stateProvince": "État"
+}

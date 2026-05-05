@@ -1,0 +1,74 @@
+@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
+@use '@carbon/layout';
+@use '@carbon/type';
+
+.container {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: layout.$spacing-03;
+}
+
+.flagsList {
+  display: flex;
+  flex-flow: row wrap;
+  column-gap: layout.$spacing-02;
+  row-gap: layout.$spacing-03;
+  align-items: center;
+  flex: 1;
+  margin: 0;
+  margin-right: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.actionButton {
+  max-height: layout.$spacing-08;
+  flex-shrink: 0;
+  align-self: center;
+  svg {
+    fill: $interactive-01 !important;
+  }
+}
+
+.flagIcon {
+  margin-right: layout.$spacing-02;
+}
+
+.flagTag {
+  padding: 0 layout.$spacing-03;
+  max-width: none;
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+
+  // Prevent Carbon's auto-tooltip by disabling text truncation
+  :global(.cds--tag__label) {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+}
+
+.tooltipPadding {
+  padding: layout.$spacing-02;
+}
+
+.content {
+  p {
+    @include type.type-style('body-01');
+  }
+
+  .title {
+    @include type.type-style('heading-compact-01');
+  }
+
+  .message {
+    margin-top: layout.$spacing-03;
+    color: colors.$gray-30;
+  }
+}
