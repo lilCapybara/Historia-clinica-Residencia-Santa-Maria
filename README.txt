@@ -6,6 +6,8 @@ Para levantar la app por primera vez:
 
 Ubicado en OpenMRS---> docker compose up
 
+Link de ingreso a la pagina de OpenMRS: http://localhost/openmrs/spa
+
 Para agregar nuevos modulos se debe clonar este dentro del repositorio a la misma altura que la carpeta OpenMRS.
 
 Tras agregar un nuevo modulo se debe instalar Yarn en el y ejecutarlo
