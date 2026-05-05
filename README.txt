@@ -27,3 +27,23 @@ Por ejemplo, para Paquete vitals seria:
 Esto permite editar el frontend correspondiente a ese paquete en tiempo real.
 
 Estos paquetes se encuentra en la carpeta packages dentro de cada modulo.
+
+
+Para que un modulo clonado al repo de github sea accesible, es necesario convertirlo de submodulo a una carpeta normal:
+
+# Eliminar el submodule de OpenMRS
+git rm --cached OpenMRS
+git rm --cached openmrs-esm-patient-chart
+
+# Ahora agregar los archivos normalmente
+git add OpenMRS/
+git add openmrs-esm-patient-chart/
+
+ó directamente git add .
+
+git commit -m "Convertir submódulos a carpetas normales"
+git push origin main
+
+En caso de que en las carpetas de modulos haya una carpeta .git, hay que borrarlas:
+rm -rf OpenMRS/.git
+rm -rf openmrs-esm-patient-chart/.git
