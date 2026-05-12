@@ -12,10 +12,33 @@
     "extensionSlots": {
       "action-menu-ward-patient-items-slot": {
         "add": ["order-basket-action-menu"]
+      },
+      "extra-visit-attribute-slot": {
+        "remove": [
+          "billing-checkin-form"
+        ]
+      },
+      "visit-form-bottom-slot": {
+        "remove": [
+          "visit-form-queue-fields"
+        ]
       }
     }
   },
   "@openmrs/esm-styleguide": {
     "Brand color #1": "#005d5d"
+  },
+  "@openmrs/esm-home-app": {
+    "extensionSlots": {
+      "homepage-dashboard-slot": {
+        "remove": [
+          "billing-dashboard-link",
+          "service-queues-dashboard-link",
+          "ward-dashboard-link",
+          "clinical-appointments-dashboard-link",
+          "laboratory-dashboard-link"
+        ]
+      }
+    }
   }
 }
