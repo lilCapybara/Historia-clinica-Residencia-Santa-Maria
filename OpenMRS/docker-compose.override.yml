@@ -14,7 +14,7 @@ services:
   backend:
     build:
       context: .
-    volumes:
-      - ./distro/configuration/locations:/openmrs/data/configuration/locations
+    #volumes:
+     # - ./distro/configuration/locations:/openmrs/data/configuration/locations
 
 
