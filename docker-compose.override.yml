@@ -1,0 +1,20 @@
+# version: "3.7"
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend/config-core_demo.json:/usr/share/nginx/html/config-core_demo.json
+
+  backend:
+    build:
+      context: .
+    #volumes:
+     # - ./distro/configuration/locations:/openmrs/data/configuration/locations
+
+
