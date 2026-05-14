@@ -46,7 +46,8 @@
     "extensionSlots": {
       "top-nav-info-slot": {
         "add": [
-          "add-patient-action"
+          "add-patient-action",
+          "billing-dashboard-link"
         ]
       }
     }
