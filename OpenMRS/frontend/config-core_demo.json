@@ -35,8 +35,18 @@
           "billing-dashboard-link",
           "service-queues-dashboard-link",
           "ward-dashboard-link",
-          "clinical-appointments-dashboard-link",
-          "laboratory-dashboard-link"
+          "clinical-appointments-dashboard-link"
+          ]
+          
+      }
+      
+    }
+  },
+  "@openmrs/esm-primary-navigation-app": {
+    "extensionSlots": {
+      "top-nav-info-slot": {
+        "add": [
+          "add-patient-action"
         ]
       }
     }
