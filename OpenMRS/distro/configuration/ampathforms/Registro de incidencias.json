@@ -181,5 +181,6 @@
   "referencedForms": [],
   "uuid": "9b3174d4-4c8b-4a7a-ba7d-4e709371cb4d",
   "description": "Registra las caídas u otros incidentes sufridos por un paciente determinado, detallando fecha, hora y lugar de la caída, además de intervenciones y tratamientos posteriores y protocolos correspondientes aplicados. ",
-  "version": "1.0"
+  "version": "1.0",
+  "published": true
 }
