@@ -58,7 +58,6 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-openmrs}
     volumes:
       - db-data:/var/lib/mysql
-      - ./db/openmrs_seed.sql:/docker-entrypoint-initdb.d/openmrs_seed.sql
 
 volumes:
   openmrs-data: ~
