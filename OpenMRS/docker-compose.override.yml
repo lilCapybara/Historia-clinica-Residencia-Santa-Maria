@@ -12,9 +12,5 @@ services:
       - ./frontend/config-core_demo.json:/usr/share/nginx/html/config-core_demo.json
 
   backend:
-    build:
-      context: .
-    #volumes:
-     # - ./distro/configuration/locations:/openmrs/data/configuration/locations
-
-
+    volumes:
+      - ./distro/configuration/backend_configuration:/openmrs/distribution/openmrs_config

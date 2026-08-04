@@ -1,0 +1,8 @@
+Uuid,Void/Retire,Name,Description
+b8bbf83e-645f-451f-8efe-a0db56e09125,,Login Location,Used to identify login locations
+1c783dca-c07b-4f65-92bd-3d0c05b72cb7,,Visit Location,Used to identify visit locations
+70a4b671-e5e6-4849-a9c3-fa0e66a07d46,,Facility Location,Used to identify facility locations
+c5c3f507-8cce-4f75-9f56-a2e22dcf8f59,,Queue Location,Used to identify queue locations
+df0bc987-8b58-4bde-9e73-c498f97e7e26,,Admission Location,Used to identify admission locations
+14e63148-9a3e-4a5b-be16-bfef93eb1484,,Appointment Location,Used to identify appointment locations
+0ca8e406-10a5-46e7-8091-1c5d46b3e6e6,,Transfer Location,Used to identify transfer locations

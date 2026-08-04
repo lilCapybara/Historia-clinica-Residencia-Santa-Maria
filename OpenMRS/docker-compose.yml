@@ -23,7 +23,7 @@ services:
       - backend
 
   backend:
-    image: openmrs/openmrs-reference-application-3-backend:${TAG:-qa}
+    image: openmrs/openmrs-reference-application-3-backend:nightly-no-demo
     restart: "unless-stopped"
     depends_on:
       - db
@@ -40,6 +40,7 @@ services:
       timeout: 5s
     volumes:
       - openmrs-data:/openmrs/data
+      - ./distro/configuration/backend_configuration:/openmrs/distribution/openmrs_config
 
   # MariaDB
   db:
