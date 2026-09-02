@@ -41,15 +41,5 @@
       }
       
     }
-  },
-  "@openmrs/esm-primary-navigation-app": {
-    "extensionSlots": {
-      "top-nav-info-slot": {
-        "add": [
-          "add-patient-action",
-          "billing-dashboard-link"
-        ]
-      }
-    }
   }
 }
