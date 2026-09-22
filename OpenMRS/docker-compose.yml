@@ -29,7 +29,7 @@ services:
 
 
   backend:
-    image: openmrs/openmrs-reference-application-3-backend:${TAG:-qa}
+    image: openmrs/openmrs-reference-application-3-backend:3.7.x-no-demo
     restart: "unless-stopped"
 
     environment:
@@ -47,7 +47,7 @@ services:
       OMRS_CONFIG_CONNECTION_SERVER: 179.197.234.35
       OMRS_CONFIG_CONNECTION_DATABASE: openmrs
       OMRS_CONFIG_CONNECTION_USERNAME: openmrs
-      OMRS_CONFIG_CONNECTION_PASSWORD: 1234
+      OMRS_CONFIG_CONNECTION_PASSWORD: Practicas2026-
 
 
     healthcheck:
@@ -59,3 +59,4 @@ services:
       - openmrs-data:/openmrs/data
 volumes:
   openmrs-data:
+
