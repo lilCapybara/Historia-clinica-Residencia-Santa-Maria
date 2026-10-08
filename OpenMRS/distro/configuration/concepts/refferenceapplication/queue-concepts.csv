@@ -1,0 +1,10 @@
+Data class,Data type,Uuid,Fully specified name:en,Description:en,Sets
+Misc,N/A,51ae5e4d-b72b-4912-bf31-a17efb690aeb,Waiting for service,Queue status: patient is waiting to be attended,Queue Status Set
+Misc,N/A,23d7ce20-72e4-4be2-b55b-de3572d01608,In Service,Queue status: patient is currently being attended,Queue Status Set
+Misc,N/A,700a4112-7546-40d5-b05c-93dd9870db46,Completed,Queue status: patient's turn has ended,Queue Status Set
+Misc,N/A,a0ace927-9cb1-442e-b587-f1ac5c0d4fff,Not Urgent,Queue priority: normal priority,Queue Priority Set
+Misc,N/A,443127f7-b990-4f51-b4bb-ec6190dc42aa,Emergency,Queue priority: urgent priority,Queue Priority Set
+Misc,N/A,08f6f310-cc47-4563-a8ef-5734486b2b4b,Triage,Default queue service,Queue Service Set
+Misc,N/A,ca8fe09e-8a28-4951-ad24-6ac152853738,Queue Status Set,Set of possible queue entry statuses,
+Misc,N/A,05043bcf-944a-4688-b4ba-e094cbe05dbf,Queue Priority Set,Set of possible queue entry priorities,
+Misc,N/A,e626cae0-a3b0-4c39-8be8-a4a1570c6a35,Queue Service Set,Set of possible queue services,

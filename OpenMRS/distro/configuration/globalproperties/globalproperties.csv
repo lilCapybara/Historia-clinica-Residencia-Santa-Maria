@@ -1,0 +1,4 @@
+Property,Value,Description
+queue.statusConceptSetName,ca8fe09e-8a28-4951-ad24-6ac152853738,Concept set for queue entry statuses
+queue.priorityConceptSetName,05043bcf-944a-4688-b4ba-e094cbe05dbf,Concept set for queue entry priorities
+queue.serviceConceptSetName,e626cae0-a3b0-4c39-8be8-a4a1570c6a35,Concept set for queue services
