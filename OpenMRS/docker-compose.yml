@@ -1,7 +1,7 @@
 services:
 
   gateway:
-    image: openmrs/openmrs-reference-application-3-gateway:${TAG:-qa}
+    image: openmrs/openmrs-reference-application-3-gateway:${TAG:-3.7.x}
     restart: "unless-stopped"
     depends_on:
       - frontend
@@ -9,54 +9,41 @@ services:
     ports:
       - "80:80"
 
-
   frontend:
-    image: openmrs/openmrs-reference-application-3-frontend:${TAG:-qa}
+    image: openmrs/openmrs-reference-application-3-frontend:${TAG:-3.7.x}
     restart: "unless-stopped"
-
     environment:
       SPA_PATH: /openmrs/spa
       API_URL: /openmrs
-      SPA_CONFIG_URLS: /openmrs/spa/config-core_demo.json
-      SPA_DEFAULT_LOCALE:
-
+      SPA_CONFIG_URLS: /openmrs/spa/residencia-config.json
+      SPA_DEFAULT_LOCALE: es
+    volumes:
+      - ./frontend/residencia-config.json:/usr/share/nginx/html/residencia-config.json:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
       timeout: 5s
-
     depends_on:
       - backend
-
 
   backend:
     image: openmrs/openmrs-reference-application-3-backend:3.7.x-no-demo
     restart: "unless-stopped"
-
     environment:
-
       OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
-
       # Permite actualizar la estructura de la DB si es necesario
       OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
-
       # Crear tablas si la DB está vacía
       OMRS_CONFIG_CREATE_TABLES: "true"
-
-
-      # DATOS DE LA VPS MYSQL
-      OMRS_CONFIG_CONNECTION_SERVER: 179.197.234.35
-      OMRS_CONFIG_CONNECTION_DATABASE: openmrs
-      OMRS_CONFIG_CONNECTION_USERNAME: openmrs
-      OMRS_CONFIG_CONNECTION_PASSWORD: Practicas2026-
-
-
+      # Datos de la VPS MySQL (definidos en el archivo .env, que NO se commitea)
+      OMRS_CONFIG_CONNECTION_SERVER: ${DB_HOST}
+      OMRS_CONFIG_CONNECTION_DATABASE: ${DB_NAME}
+      OMRS_CONFIG_CONNECTION_USERNAME: ${DB_USER}
+      OMRS_CONFIG_CONNECTION_PASSWORD: ${DB_PASSWORD}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs"]
       timeout: 5s
-
-
     volumes:
       - openmrs-data:/openmrs/data
+
 volumes:
   openmrs-data:
-

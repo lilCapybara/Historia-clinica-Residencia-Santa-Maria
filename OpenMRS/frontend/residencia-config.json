@@ -1,0 +1,13 @@
+{
+  "@openmrs/esm-home-app": {
+    "extensionSlots": {
+      "homepage-dashboard-slot": {
+        "remove": [
+          "service-queues-dashboard-link",
+          "ward-dashboard-link",
+          "billing-dashboard-link"
+        ]
+      }
+    }
+  }
+}
