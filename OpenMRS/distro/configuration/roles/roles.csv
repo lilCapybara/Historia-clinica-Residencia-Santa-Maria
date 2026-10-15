@@ -1,0 +1,3 @@
+Uuid,Role name,Description,Inherited roles,Privileges
+dddd3112-fc0c-496a-a4cc-563cd312396b,Protocolos: Consulta,Puede ver y descargar los protocolos institucionales,,Get Protocolos
+1db127bf-ae44-4e71-8720-93b83af0cf00,Protocolos: Gestion,Puede subir y eliminar protocolos institucionales,Protocolos: Consulta,Manage Protocolos
