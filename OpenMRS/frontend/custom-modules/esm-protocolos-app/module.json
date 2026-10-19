@@ -1,0 +1,5 @@
+{
+  "name": "@residencia/esm-protocolos-app",
+  "entry": "openmrs-esm-protocols-frontend-app.js",
+  "version": "1.0.0"
+}

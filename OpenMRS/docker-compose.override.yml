@@ -6,15 +6,19 @@ services:
       context: ./gateway
 
   frontend:
+    # Imagen propia: oficial + modulos de la residencia (ver residencia/frontend.Dockerfile)
+    image: residencia/openmrs-frontend:local
     build:
-      context: ./frontend
+      context: .
+      dockerfile: residencia/frontend.Dockerfile
     volumes:
       - ./frontend/config-core_demo.json:/usr/share/nginx/html/config-core_demo.json
 
   backend:
+    # Imagen propia: oficial + modulos de la residencia (ver residencia/backend.Dockerfile)
+    image: residencia/openmrs-backend:local
     build:
       context: .
+      dockerfile: residencia/backend.Dockerfile
     #volumes:
      # - ./distro/configuration/locations:/openmrs/data/configuration/locations
-
-

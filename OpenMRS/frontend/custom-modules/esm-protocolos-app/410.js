@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunk_residencia_esm_protocolos_app=globalThis.webpackChunk_residencia_esm_protocolos_app||[]).push([["410"],{2177(e,a,o){o.r(a),o.d(a,{SWRConfig:()=>s.S,default:()=>s.u,mutate:()=>l.k,preload:()=>i.preload,unload:()=>l.l,unstable_serialize:()=>p,useSWRConfig:()=>i.useSWRConfig});var s=o(2272),l=o(8444),i=o(4993);let p=e=>(0,l.s)(e)[0]}}]);
