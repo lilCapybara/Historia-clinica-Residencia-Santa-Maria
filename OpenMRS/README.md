@@ -1,279 +1,145 @@
-# OpenMRS 3.0 Reference Application
+# Historia clínica — Residencia Santa María (OpenMRS 3)
 
-This project holds the build configuration for the OpenMRS 3.0 reference application, found on
-https://dev3.openmrs.org and https://o3.openmrs.org.
+Implementación de OpenMRS 3 (O3) como sistema de historia clínica de la Residencia Santa María y el Hogar San José. Es parte de la Práctica Profesional Supervisada (PPS) de la TUDAI (UNICEN).
 
-## Quick start
+Parte del [distro de referencia de OpenMRS 3](https://github.com/openmrs/openmrs-distro-referenceapplication) y le suma módulos y configuración propios. Lo que este README no cubre (SSL con Let's Encrypt, Grafana, etc.) sigue siendo lo que documenta ese repositorio.
 
-### Run the app (using pre-built images)
+## Qué se agregó respecto al distro de referencia
 
-```bash
-docker compose up
+- **Módulo de protocolos** (frontend `esm-protocolos-app` + módulo backend `.omod`): consulta y gestión de protocolos institucionales.
+- **Módulo de control de glucemia** (frontend `@openmrs/esm-glycemia-control-app`): registro de HGT y sugerencia de corrección con insulina. Código y documentación: [openmrs-esm-glycemia-control-app](https://github.com/lilCapybara/openmrs-esm-glycemia-control-app).
+- **Metadatos propios** cargados con Initializer: conceptos, tipos de encuentro, ubicaciones de ambas sedes, roles y formularios.
+- **Imágenes propias** de frontend y backend, que parten de las oficiales (`3.7.x`) y les agregan lo anterior.
+- **Base de datos externa** (MySQL en un servidor propio) en lugar del contenedor `db` del distro.
+- Idioma por defecto del frontend: español (`SPA_DEFAULT_LOCALE: es`).
+
+## Estructura
+
+Todo lo relevante está dentro de `OpenMRS/` (la carpeta que contiene el `docker-compose.yml`):
+
+```
+OpenMRS/
+├── docker-compose.yml            # servicios base: gateway, frontend, backend
+├── docker-compose.override.yml   # se aplica solo: construye las imágenes propias
+├── residencia/
+│   ├── backend.Dockerfile        # imagen oficial + .omod propios + distro/configuration
+│   └── frontend.Dockerfile       # imagen oficial + módulos frontend propios
+├── custom-modules/               # módulos backend propios (.omod)
+├── distro/configuration/         # configuración de Initializer (ver más abajo)
+├── frontend/
+│   ├── custom-modules/           # módulos frontend propios (dist compilado + module.json)
+│   ├── add-custom-modules.js     # los registra en el SPA durante el build
+│   ├── residencia-config.json    # configuración del frontend (se monta como volumen)
+│   ├── spa-assemble-config.json  # módulos oficiales que trae el SPA
+│   └── config-core_demo.json
+└── gateway/                      # nginx que une frontend y backend
 ```
 
-The OpenMRS 3.x UI is accessible at http://localhost/openmrs/spa
+## Primer arranque
 
-OpenMRS Legacy UI is accessible at http://localhost/openmrs
+Requisitos: Docker con Docker Compose.
 
-### Production deployment with SSL
+1. Crear `OpenMRS/.env` (no se commitea) con los datos de la base:
 
-For production deployments with HTTPS/SSL certificates, create a `.env` file in the project root:
+   ```
+   DB_HOST=...
+   DB_NAME=...
+   DB_USER=...
+   DB_PASSWORD=...
+   ```
 
-```env
-COMPOSE_FILE=docker-compose.yml:docker-compose.ssl.yml
-SSL_MODE=prod
-CERT_WEB_DOMAINS=your-domain.com
-CERT_CONTACT_EMAIL=admin@your-domain.com
+2. Levantar todo, desde la carpeta `OpenMRS/`:
+
+   ```
+   docker compose up -d --build
+   ```
+
+   El `docker-compose.override.yml` se aplica automáticamente. El backend tarda unos 8 minutos en arrancar; seguirlo con `docker compose logs -f backend` hasta ver `Server startup in [...] milliseconds`.
+
+3. Abrir `http://localhost/openmrs/spa` (UI nueva) o `http://localhost/openmrs` (UI legacy).
+
+## Metadatos (Initializer)
+
+La configuración vive en `distro/configuration/` y **viaja dentro de la imagen del backend**: `residencia/backend.Dockerfile` la copia a `/openmrs/distribution/openmrs_config`, y al arrancar OpenMRS la copia a `/openmrs/data/configuration` y Initializer la aplica.
+
+Para cambiar un metadato: editar el CSV, y reconstruir y reiniciar el backend.
+
+```
+docker compose build backend
+docker compose up -d backend
 ```
 
-Then start the application as usual:
+Dominios en uso: `ampathforms`, `concepts`, `encountertypes`, `globalproperties`, `locations`, `roles`.
 
-```bash
-docker compose up
+### Registros de los que dependen otros módulos
+
+No cambiar estos UUID sin actualizar `frontend/residencia-config.json`:
+
+| Tipo | Nombre | UUID |
+|---|---|---|
+| Concepto | Glycemia level | `4e396ca3-e951-4c6c-92e9-683ba642169e` |
+| Tipo de encuentro | Glycemia Reading | `50ce5a90-e738-47c3-bd5b-68464615ce62` |
+| Ubicación | Recepcion | `fc6cecb2-9ab1-4974-988e-295f59000f50` |
+| Ubicación | Residencia Santa Maria | `93918ee3-4cb9-49b3-8897-c480b1d895e3` |
+| Ubicación | Hogar San Jose | `875bdd70-9e33-4fb7-87d0-840c53c925e6` |
+| Rol | Enfermeria | `2131cdbb-0fae-4a3f-8eb2-1e58c65d0610` |
+| Rol | Protocolos: Consulta | `dddd3112-fc0c-496a-a4cc-563cd312396b` |
+| Rol | Protocolos: Gestion | `1db127bf-ae44-4e71-8720-93b83af0cf00` |
+
+### Ubicaciones
+
+Hay dos sedes, Hogar San Jose y Residencia Santa Maria, cada una con sus ubicaciones internas (habitaciones, comedor, patios, etc.), definidas en `distro/configuration/locations/residencia/locations.csv`.
+
+- Las ubicaciones internas se llaman `<Sede> - <nombre>` (por ejemplo `Residencia Santa Maria - Habitación 1`), porque varios nombres se repiten entre sedes.
+- Las dos sedes y `Recepcion` tienen la etiqueta *Login Location* (son las que se eligen al iniciar sesión). Las internas no la tienen.
+- Los UUID de las ubicaciones internas se generaron una sola vez y están fijos en el CSV. No regenerar el archivo con otros UUID.
+
+### Roles
+
+Definidos en `distro/configuration/roles/roles.csv`:
+
+- `Protocolos: Consulta` y `Protocolos: Gestion`.
+- `Enfermeria`: **hoy es una copia fiel del rol creado a mano, con 334 privilegios, e incluye permisos administrativos** (alta de usuarios, cambio de contraseñas, gestión de roles, borrado de encuentros). Ver pendientes.
+
+## Frontend y módulos propios
+
+El SPA se arma en dos pasos:
+
+1. La imagen oficial (`openmrs-reference-application-3-frontend`) trae los módulos de `spa-assemble-config.json`.
+2. `residencia/frontend.Dockerfile` ejecuta `frontend/add-custom-modules.js`, que toma cada carpeta de `frontend/custom-modules/`, la copia al SPA y la registra en `importmap.json` y `routes.registry.json`.
+
+Cada carpeta de `frontend/custom-modules/` contiene el `dist/` compilado del módulo y un `module.json`:
+
+```json
+{ "name": "@openmrs/esm-glycemia-control-app", "entry": "openmrs-esm-glycemia-control-app.js", "version": "4.0.0" }
 ```
 
-The `COMPOSE_FILE` variable tells Docker Compose to automatically include the SSL overlay, so you never need to pass `-f` flags. See the [SSL/HTTPS Configuration](#sslhttps-configuration) section for detailed setup instructions.
+El `name` tiene que ser idéntico al nombre del paquete del módulo. Procedimiento para actualizar un módulo: ver `frontend/custom-modules/README.md`; después, reconstruir el frontend:
 
-## Overview
-
-This distribution consists of four images:
-
-- **db** - This is just the standard MariaDB image supplied to use as a database
-- **backend** - This image is the OpenMRS backend. It is built from the main Dockerfile included in the root of the project and
-  based on the core OpenMRS Docker file. Additional contents for this image are drawn from the `distro` sub-directory which
-  includes a full Initializer configuration for the reference application intended as a starting point.
-- **frontend** - This image is a simple nginx container that embeds the 3.x frontend, including the modules described in the
-  `frontend/spa-assemble-config.json` file.
-- **gateway** - This image is an nginx reverse proxy that sits in front of the `backend` and `frontend` containers
-  and provides a common interface to both. This helps mitigate CORS issues.
-
-When running with SSL enabled (using `docker-compose.ssl.yml`), an additional service is included:
-
-- **certbot** - This image is used for generating and renewing SSL certificates (Let's Encrypt or self-signed)
-
-## SSL/HTTPS Configuration
-
-The application can be run with SSL/HTTPS support for both development and production environments.
-
-SSL configuration lives in `docker-compose.ssl.yml`, which is included alongside the base `docker-compose.yml`. The recommended way to enable it is via a `.env` file in the project root:
-
-```env
-COMPOSE_FILE=docker-compose.yml:docker-compose.ssl.yml
+```
+docker compose build frontend
+docker compose up -d --force-recreate frontend
 ```
 
-This tells Docker Compose to automatically include the SSL overlay, so all commands remain simply `docker compose up`, `docker compose down`, etc. without needing `-f` flags. All SSL-related environment variables (like `SSL_MODE` and `CERT_WEB_DOMAINS`) can also be set in this file.
+`frontend/residencia-config.json` se monta como volumen: cambiarlo **no** requiere reconstruir, alcanza con recargar el navegador (refresco forzado, `Ctrl+Shift+R`). Ahí está la configuración de cada módulo, por ejemplo los UUID de glucemia.
 
-### Development mode (self-signed certificates)
+El navegador cachea el `importmap` con un service worker: si un módulo nuevo no aparece, probar en una ventana de incógnito o limpiar los datos del sitio.
 
-For local development with HTTPS:
+## Problemas conocidos
 
-```env
-# .env
-COMPOSE_FILE=docker-compose.yml:docker-compose.ssl.yml
+**El backend se reinicia en bucle con `cp: cannot create regular file ... Permission denied`.**
+Quedaron archivos con dueño `root` en el volumen `openmrs-data` (por haber copiado cosas con `docker cp`). El backend corre con un usuario sin privilegios y no puede sobrescribirlos. No usar `docker cp` para la configuración: todo entra por la imagen. Para repararlo:
+
+```
+docker compose stop backend
+docker compose run --rm --no-deps --user root --entrypoint sh backend -c "chown -R --reference=/openmrs/data /openmrs/data/configuration"
+docker compose up -d backend
 ```
 
-```bash
-docker compose up
-```
+**Un módulo frontend no aparece después de reconstruir.**
+Comprobar que el contenedor se recreó (`--force-recreate`), verificar que figura en `http://localhost/openmrs/spa/importmap.json` y limpiar la caché del navegador.
 
-This will:
-- Automatically generate self-signed certificates for `localhost` and `127.0.0.1`
-- Configure nginx to use HTTPS on port 443
-- Redirect HTTP (port 80) to HTTPS
+## Pendientes
 
-The application will be accessible at:
-- https://localhost/openmrs/spa
-- https://127.0.0.1/openmrs/spa
-
-**Note**: Your browser will show a security warning for self-signed certificates. This is expected - click "Advanced" and proceed to the site.
-
-### Production mode (Let's Encrypt)
-
-For production deployments with valid SSL certificates from Let's Encrypt, create a `.env` file:
-
-```env
-# .env
-COMPOSE_FILE=docker-compose.yml:docker-compose.ssl.yml
-SSL_MODE=prod
-CERT_WEB_DOMAINS=example.com
-CERT_CONTACT_EMAIL=admin@example.com
-```
-
-```bash
-docker compose up
-```
-
-**Configuration options**:
-
-- `SSL_MODE=prod` - Use Let's Encrypt certificates (required)
-- `CERT_WEB_DOMAINS` - Your domain name(s), comma-separated (e.g., `example.com,www.example.com`). The first domain is used as the primary domain for certificate paths and the nginx `server_name` directive.
-- `CERT_CONTACT_EMAIL` - Email for Let's Encrypt notifications
-- `CERT_WEB_DOMAIN_COMMON_NAME` - (Optional) Override the primary domain. By default, this is derived from the first domain in `CERT_WEB_DOMAINS`. You only need to set this if you want the certificate's common name to differ from the first domain.
-- `SSL_STAGING=true` - (Optional) Use Let's Encrypt staging environment for testing
-
-**The certbot container will**:
-1. Create a temporary certificate to allow nginx to start
-2. Wait for nginx to be ready
-3. Request a real Let's Encrypt certificate via ACME HTTP-01 challenge
-4. Reload nginx with the real certificate
-5. Run a renewal daemon that checks for renewal every 12 hours
-
-**Important**: Ensure your domain's DNS is correctly configured to point to your server before starting, as Let's Encrypt needs to verify domain ownership via HTTP.
-
-### Testing with Let's Encrypt staging
-
-To test the SSL setup without hitting Let's Encrypt rate limits, add `SSL_STAGING=true` to your `.env` file:
-
-```env
-# .env
-COMPOSE_FILE=docker-compose.yml:docker-compose.ssl.yml
-SSL_MODE=prod
-SSL_STAGING=true
-CERT_WEB_DOMAINS=example.com
-CERT_CONTACT_EMAIL=admin@example.com
-```
-
-Staging certificates won't be trusted by browsers but allow you to verify the setup works correctly. Remove `SSL_STAGING` (or set it to `false`) once you've confirmed the setup works.
-
-### Certificate profiles
-
-Let's Encrypt offers different certificate profiles with varying validity periods:
-
-| Profile | Validity | Use Case |
-|---------|----------|----------|
-| `classic` | 90 days (default) | Standard certificates |
-| `tlsserver` | 45 days | Shorter validity for improved security |
-| `shortlived` | 6 days | Required for IP address certificates |
-
-To request a specific profile, add `CERT_PROFILE` to your `.env` file:
-
-```env
-# .env (additions)
-CERT_PROFILE=tlsserver
-```
-
-**Note**: Let's Encrypt is transitioning all certificates to 45-day validity by 2028. Using the `tlsserver` profile allows you to opt-in to shorter certificates now.
-
-### IP address certificates
-
-Let's Encrypt now supports issuing certificates for publicly-addressable IP addresses. These certificates must use the `shortlived` profile (6-day validity).
-
-```env
-# .env
-COMPOSE_FILE=docker-compose.yml:docker-compose.ssl.yml
-SSL_MODE=prod
-CERT_WEB_DOMAINS=203.0.113.50
-CERT_CONTACT_EMAIL=admin@example.com
-```
-
-**Important notes for IP address certificates**:
-- The IP address must be publicly addressable (not private IPs like 192.168.x.x or 10.x.x.x)
-- The `shortlived` profile is automatically selected when an IP address is detected
-- Certificates are valid for approximately 6 days and renew automatically
-- IPv6 addresses are also supported
-
-You can also mix domain names and IP addresses:
-
-```env
-CERT_WEB_DOMAINS=example.com,203.0.113.50
-```
-
-When any IP address is included, the shortlived profile is required and will be automatically enforced.
-
-### Manual certificate renewal
-
-While certificates renew automatically in production mode, you can manually force renewal if needed.
-
-**If the certbot container is running** (prod mode):
-
-```bash
-# Force renewal
-docker compose exec certbot certbot renew --force-renewal --webroot -w /var/www/certbot
-
-# Reload nginx to pick up new certificates
-docker compose exec gateway nginx -s reload
-```
-
-**If certbot container has stopped or for one-off renewal**:
-
-```bash
-# Run certbot in one-off mode (override entrypoint to run certbot directly)
-docker compose run --rm --entrypoint certbot certbot \
-  renew --force-renewal --webroot -w /var/www/certbot
-
-# Reload nginx
-docker compose exec gateway nginx -s reload
-```
-
-**Check certificate expiration**:
-
-```bash
-# If certbot container is running
-docker compose exec certbot certbot certificates
-
-# If certbot container is stopped
-docker compose run --rm --entrypoint certbot certbot certificates
-```
-
-### Regenerating certificates
-
-If you need to start fresh with certificates (e.g., after changing domains), delete the letsencrypt volume and restart:
-
-```bash
-docker compose down
-
-# Remove only this project's letsencrypt volume
-docker volume rm "$(docker compose config | awk '/^name:/{print $2}')_letsencrypt-data"
-
-docker compose up
-```
-
-The certbot entrypoint skips certificate generation when it finds existing certificates for the configured domain. Removing the volume forces it to go through the full setup process again.
-
-### Running with Grafana
-
-The service can run with Grafana for monitoring logs. You can run it with:
-```bash
-docker compose -f docker-compose.yml -f docker-compose.grafana.yml up
-```
-Grafana will be available at http://localhost/grafana. Use admin as username and see docker-compose.grafana.yml for the initial password.
-
-If you would like to use grafana in your distro, you just need to copy over `docker-compose.grafana.yml`.
-
-### Environment variables reference
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SSL_MODE` | `dev` | `dev` for self-signed certificates, `prod` for Let's Encrypt |
-| `SSL_STAGING` | `false` | Use Let's Encrypt staging environment (set to `true` for testing) |
-| `CERT_WEB_DOMAINS` | `localhost,127.0.0.1` | Comma-separated list of domain names or IP addresses |
-| `CERT_WEB_DOMAIN_COMMON_NAME` | first domain from `CERT_WEB_DOMAINS` | Override the primary domain used for certificate paths and nginx `server_name`. Most users should not set this. |
-| `CERT_CONTACT_EMAIL` | (empty) | Email for Let's Encrypt notifications (required in prod mode) |
-| `CERT_RSA_KEY_SIZE` | `4096` | RSA key size for certificates |
-| `CERT_PROFILE` | (empty) | Certificate profile: `classic` (90 days), `tlsserver` (45 days), or `shortlived` (6 days). Auto-set to `shortlived` for IP addresses |
-
-## Contributing to the configuration
-
-This project uses the [Initializer](https://github.com/mekomsolutions/openmrs-module-initializer) module
-to configure metadata for this project. The Initializer configuration can be found in the configuration
-subfolder of the distro folder. Any files added to this will be automatically included as part of the
-metadata for the RefApp.
-
-Eventually, we would like to split this metadata into two packages:
-
-- `openmrs-core`, which will contain all the metadata necessary to run OpenMRS
-- `openmrs-demo`, which will include all of the sample data we use to run the RefApp
-
-The `openmrs-core` package will eventually be a standard part of the distribution, with the `openmrs-demo`
-provided as an optional add-on. Most data in this configuration _should_ be regarded as demo data. We
-anticipate that implementation-specific metadata will replace data in the `openmrs-demo` package,
-though they may use that metadata as a starting point for that customization.
-
-To help us keep track of things, we ask that you suffix any files you add with either
-`-core_demo` for files that should be part of the demo package and `-core_data` for
-those that should be part of the core package. For example, a form named `test_form.json` would become
-`test_core-core_demo.json`.
-
-Frontend configuration can be found in `frontend/config-core_demo.json`.
-
-Thanks!
+- Reducir los privilegios del rol `Enfermeria` a los que realmente necesita (hoy puede administrar usuarios y roles).
+- Probar una instalación desde cero (base y volumen vacíos) contra una base de descarte, para confirmar que todos los metadatos se crean solos.
