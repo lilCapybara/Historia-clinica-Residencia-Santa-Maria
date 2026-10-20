@@ -9,5 +9,10 @@
         ]
       }
     }
+  },
+  "@openmrs/esm-glycemia-control-app": {
+    "glycemiaConceptUuid": "4e396ca3-e951-4c6c-92e9-683ba642169e",
+    "encounterTypeUuid": "50ce5a90-e738-47c3-bd5b-68464615ce62",
+    "locationUuid": "fc6cecb2-9ab1-4974-988e-295f59000f50"
   }
 }
