@@ -1,0 +1,30 @@
+Uuid,Void/Retire,Fully specified name:es,Data class,Data type
+3cbf7124-acf9-4ebd-985c-1c45ccdf2210,,Unidades de empaque,ConvSet,N/A
+c4356172-83eb-4206-af0c-808d50f473bc,,Unidades de dispensación,ConvSet,N/A
+33c6d40e-2b7b-4602-a408-c5fe269a7756,,Motivos de ajuste de stock,ConvSet,N/A
+a3676b78-ba6d-4c64-afa0-1a52e086be9f,,Motivos de toma de inventario,ConvSet,N/A
+08a3c91e-8470-43da-88f2-83560ac708b8,,Tipos de origen de stock,ConvSet,N/A
+360a38c9-2819-4093-862b-50e4bf9a2d66,,Categorías de artículos de stock,ConvSet,N/A
+8f6c33c6-4dd9-4cf1-98d4-b56bbde6b39c,,Caja,Misc,N/A
+5ff44fd1-6bcc-49f2-bd40-1f471ef42fad,,Blíster,Misc,N/A
+dfda07ea-a3aa-4958-9c92-52f1b4cee86c,,Frasco,Misc,N/A
+28ece1ae-f444-4dec-9970-5885a521339f,,Paquete,Misc,N/A
+a8c18590-7cb6-45c8-b1db-66de9c3d162d,,Unidad,Misc,N/A
+32c3c803-00a9-43f3-89c6-e60317c87be8,,Comprimido,Misc,N/A
+138fc218-6b0c-4f1c-863e-46f3fef0b964,,Cápsula,Misc,N/A
+d1edd64f-0086-43c4-af2d-d936aecb15a1,,Mililitro,Misc,N/A
+7b637889-e2d5-4464-b2ad-9304175c6486,,Ampolla,Misc,N/A
+7f67e971-ae31-49ab-a9c5-e6296f3488af,,Sobre,Misc,N/A
+f10099a6-ea65-4e6f-9cb8-c28884cd81f3,,Vencido,Misc,N/A
+2f1b9be7-4cdd-4d06-9ebe-484eef1d27ec,,Dañado,Misc,N/A
+a385fab6-8ff6-4d0b-abca-7bf04a1836f5,,Consumo,Misc,N/A
+79e316d6-76a3-414b-bfa8-ba824d3b3f7a,,Corrección de conteo,Misc,N/A
+7876d443-777e-4893-bb14-64108f45beb7,,Extraviado,Misc,N/A
+dd7b93d5-6051-4bec-bce8-dc90b9bc5627,,Control rutinario,Misc,N/A
+b4304885-d6ea-4b84-8338-e2ab3d5c7cc6,,Auditoría,Misc,N/A
+87b8aec2-a899-4168-b5f5-c1a74e62d896,,Proveedor,Misc,N/A
+a30ee9d6-906e-40cd-b3f9-b14675e3221f,,Farmacia,Misc,N/A
+709e8e7a-47b0-4751-9fa3-618ac4cb6c13,,Donación,Misc,N/A
+90dd5db2-44f7-484b-b96a-eaf3d4755926,,Medicamento,Misc,N/A
+1c2bf29f-184e-4f81-af49-e6802515034f,,Material descartable,Misc,N/A
+64072ebd-e273-444f-8c72-4761f2beeb2b,,Higiene personal,Misc,N/A

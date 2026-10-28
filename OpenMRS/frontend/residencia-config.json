@@ -14,5 +14,13 @@
     "glycemiaConceptUuid": "4e396ca3-e951-4c6c-92e9-683ba642169e",
     "encounterTypeUuid": "50ce5a90-e738-47c3-bd5b-68464615ce62",
     "locationUuid": "fc6cecb2-9ab1-4974-988e-295f59000f50"
+  },
+  "@openmrs/esm-stock-management-app": {
+    "packingUnitsUUID": "3cbf7124-acf9-4ebd-985c-1c45ccdf2210",
+    "dispensingUnitsUUID": "c4356172-83eb-4206-af0c-808d50f473bc",
+    "stockAdjustmentReasonUUID": "33c6d40e-2b7b-4602-a408-c5fe269a7756",
+    "stockTakeReasonUUID": "a3676b78-ba6d-4c64-afa0-1a52e086be9f",
+    "stockSourceTypeUUID": "08a3c91e-8470-43da-88f2-83560ac708b8",
+    "stockItemCategoryUUID": "360a38c9-2819-4093-862b-50e4bf9a2d66"
   }
 }
