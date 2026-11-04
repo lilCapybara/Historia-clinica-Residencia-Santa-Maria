@@ -16,3 +16,12 @@ Cada carpeta tiene el contenido de `dist/` del módulo compilado más un `module
 Si cambia la versión en package.json, actualizarla también en module.json.
 
 Repo del código fuente: https://github.com/lilCapybara/openmrs-esm-protocols-frontend-app
+
+## Actualizar el módulo de inventario (stock)
+
+    cd C:\Users\sebas\IdeaProjects\openmrs-esm-stock-items-app
+    yarn build
+    Get-ChildItem "..\PPS Residencia Santa Maria\OpenMRS\frontend\custom-modules\esm-stock-items-app" -Exclude module.json | Remove-Item -Recurse -Force
+    Copy-Item dist\* "..\PPS Residencia Santa Maria\OpenMRS\frontend\custom-modules\esm-stock-items-app" -Recurse
+
+Repo del código fuente: https://github.com/lilCapybara/openmrs-esm-stock-items-app

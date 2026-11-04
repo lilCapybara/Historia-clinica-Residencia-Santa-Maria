@@ -1,0 +1,5 @@
+{
+  "name": "@residencia/esm-stock-items-app",
+  "entry": "residencia-esm-stock-items-app.js",
+  "version": "4.0.0"
+}
